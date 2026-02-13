@@ -87,7 +87,7 @@ async function getAIResponse(userMsg) {
         "Authorization": `Bearer ${OPENROUTER_API_KEY}`
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "openai/gpt-3.5-turbo",
         messages: [
           { role: "system", content: "You are a professional hair salon assistant AI. Answer questions about haircuts, beard styles, colors, and give hairstyle or haircare tips. Use short, clean, readable sentences." },
           { role: "user", content: userMsg }

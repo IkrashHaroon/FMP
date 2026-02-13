@@ -9,7 +9,7 @@ export async function handler(event) {
         "Authorization": "Bearer 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"
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "openai/gpt-3.5-turbo",
         messages: [
           {
             role: "system",
