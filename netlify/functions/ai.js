@@ -6,7 +6,7 @@ export async function handler(event) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer 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"
+        "Authorization": "Bearer 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"
       },
       body: JSON.stringify({
         model: "gpt-4o-mini",
