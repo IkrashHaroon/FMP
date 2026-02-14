@@ -1,12 +1,19 @@
 export async function handler(event) {
   try {
+    if (event.httpMethod !== "POST") {
+      return {
+        statusCode: 405,
+        body: JSON.stringify({ error: "Method not allowed" })
+      };
+    }
+
     const { message } = JSON.parse(event.body);
 
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer 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"
+        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`
       },
       body: JSON.stringify({
         model: "openai/gpt-3.5-turbo",
@@ -30,6 +37,8 @@ export async function handler(event) {
     };
 
   } catch (error) {
+    console.error("AI Function Error:", error);
+
     return {
       statusCode: 500,
       body: JSON.stringify({ error: "Server error" })

@@ -1,4 +1,5 @@
 'use strict';
+
 const addEventOnElem = function (elem, type, callback) {
   if (elem.length > 1) {
     for (let i = 0; i < elem.length; i++) {
@@ -59,13 +60,10 @@ chatCircle.addEventListener("click", () => {
   chatBox.classList.toggle("open");
 });
 
-// Chat functionality with loader + OpenRouter AI
+// Chat functionality with loader + Netlify AI
 const chatBody = document.getElementById("chat-body");
 const chatInput = document.getElementById("chat-input");
 const chatSend = document.getElementById("chat-send");
-
-// OpenRouter API key
-const OPENROUTER_API_KEY = "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";
 
 // Loader HTML
 function showLoader() {
@@ -77,23 +75,16 @@ function showLoader() {
   return loader;
 }
 
-// Fetch AI response from OpenRouter
+// Fetch AI response from Netlify Function
 async function getAIResponse(userMsg) {
   try {
     const response = await fetch("/.netlify/functions/ai", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${OPENROUTER_API_KEY}`
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "openai/gpt-3.5-turbo",
-        messages: [
-          { role: "system", content: "You are a professional hair salon assistant AI. Answer questions about haircuts, beard styles, colors, and give hairstyle or haircare tips. Use short, clean, readable sentences." },
-          { role: "user", content: userMsg }
-        ],
-        temperature: 0.7,
-        max_tokens: 100
+        message: userMsg
       })
     });
 
@@ -109,22 +100,27 @@ async function getAIResponse(userMsg) {
     } else {
       return "Sorry, I couldn't understand that!";
     }
+
   } catch (error) {
     console.error(error);
     return "Oops! Something went wrong. Please try again.";
   }
 }
 
-
 chatSend.addEventListener("click", async () => {
   const userMsg = chatInput.value.trim();
   if (!userMsg) return;
+
   chatBody.innerHTML += `<div class="message user-msg">${userMsg}</div>`;
   chatInput.value = "";
   chatBody.scrollTop = chatBody.scrollHeight;
+
   const loaderElem = showLoader();
+
   const aiMsg = await getAIResponse(userMsg);
+
   loaderElem.remove();
+
   chatBody.innerHTML += `<div class="message ai-msg">${aiMsg}</div>`;
   chatBody.scrollTop = chatBody.scrollHeight;
 });
