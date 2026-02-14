@@ -31,13 +31,15 @@ export async function handler(event) {
 
     const data = await response.json();
 
+    const reply = data?.choices?.[0]?.message?.content || "AI is unavailable.";
+
     return {
       statusCode: 200,
-      body: JSON.stringify(data)
+      body: JSON.stringify({ reply })
     };
 
   } catch (error) {
-    console.error("AI Function Error:", error);
+    console.error("Function Error:", error);
 
     return {
       statusCode: 500,

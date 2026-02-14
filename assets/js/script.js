@@ -60,12 +60,12 @@ chatCircle.addEventListener("click", () => {
   chatBox.classList.toggle("open");
 });
 
-// Chat functionality with loader + Netlify AI
+// Chat functionality
 const chatBody = document.getElementById("chat-body");
 const chatInput = document.getElementById("chat-input");
 const chatSend = document.getElementById("chat-send");
 
-// Loader HTML
+// Loader
 function showLoader() {
   const loader = document.createElement("div");
   loader.className = "message ai-msg loader";
@@ -75,7 +75,7 @@ function showLoader() {
   return loader;
 }
 
-// Fetch AI response from Netlify Function
+// Fetch AI response
 async function getAIResponse(userMsg) {
   try {
     const response = await fetch("/.netlify/functions/ai", {
@@ -83,26 +83,23 @@ async function getAIResponse(userMsg) {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        message: userMsg
-      })
+      body: JSON.stringify({ message: userMsg })
     });
 
     const data = await response.json();
 
-    if (data && data.choices && data.choices[0].message.content) {
-      const text = data.choices[0].message.content;
-      return text
+    if (data.reply) {
+      return data.reply
         .split(". ")
         .map(sentence => sentence.trim())
         .filter(Boolean)
         .join(".\n");
     } else {
-      return "Sorry, I couldn't understand that!";
+      return "AI is currently unavailable. Please try again.";
     }
 
   } catch (error) {
-    console.error(error);
+    console.error("Chat Error:", error);
     return "Oops! Something went wrong. Please try again.";
   }
 }
@@ -116,9 +113,7 @@ chatSend.addEventListener("click", async () => {
   chatBody.scrollTop = chatBody.scrollHeight;
 
   const loaderElem = showLoader();
-
   const aiMsg = await getAIResponse(userMsg);
-
   loaderElem.remove();
 
   chatBody.innerHTML += `<div class="message ai-msg">${aiMsg}</div>`;
